@@ -94,7 +94,7 @@ export default {
     display: flex;
     align-items: flex-end;
     color: var(--text-primary);
-    padding: 0 8px 0 56px;
+    padding: 0 8px 0 8px;
     height: 100%;
     overflow-x: auto;
     overflow-y: hidden;

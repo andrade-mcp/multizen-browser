@@ -1311,16 +1311,14 @@ export default {
     overflow: auto;
     background: var(--bg-primary);
     transition: background-color 0.3s ease;
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
+    display: block;
 }
 
 .profiles-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    min-height: 400px;
+    table-layout: fixed;
 
     thead {
         background: var(--bg-secondary);
@@ -1330,14 +1328,15 @@ export default {
         transition: background-color 0.3s ease;
 
         th {
-            padding: 8px 8px;
+            padding: 6px 8px;
             text-align: left;
             font-weight: 600;
             color: var(--text-primary);
             border-bottom: 2px solid var(--border-color);
             white-space: nowrap;
             transition: color 0.3s ease, border-color 0.3s ease;
-            font-size: 12px;
+            font-size: 11px;
+            line-height: 1.3;
 
             &.sortable {
                 cursor: pointer;
@@ -1365,6 +1364,9 @@ export default {
 
     tbody {
         tr {
+            height: 32px;
+            min-height: 32px;
+            max-height: 32px;
             border-bottom: 1px solid var(--border-light);
             transition: background 0.2s ease;
 
@@ -1381,12 +1383,16 @@ export default {
             }
 
             td {
-                padding: 6px 8px;
+                padding: 4px 8px;
                 color: var(--text-primary);
                 vertical-align: middle;
                 transition: color 0.3s ease;
-                font-size: 12px;
-                line-height: 1.4;
+                font-size: 11px;
+                line-height: 1.3;
+                height: 32px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     }
@@ -1415,7 +1421,7 @@ export default {
     .name-cell {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
 
         i {
             color: var(--accent-color);
@@ -1423,11 +1429,12 @@ export default {
 
         .name-input {
             flex: 1;
-            padding: 3px 6px;
+            padding: 2px 4px;
             border: 1px solid transparent;
             border-radius: 2px;
-            font-size: 12px;
-            line-height: 1.3;
+            font-size: 11px;
+            line-height: 1.2;
+            height: 20px;
             background: transparent;
             color: var(--text-primary);
             min-width: 0;
@@ -1452,7 +1459,7 @@ export default {
     .platform-cell {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
 
         i {
             color: #4a90e2;
@@ -1466,7 +1473,7 @@ export default {
     .proxy-cell {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
 
         .proxy-icon {
             display: inline-block;
@@ -1493,11 +1500,12 @@ export default {
 
     .remark-input {
         width: 100%;
-        padding: 3px 6px;
+        padding: 2px 4px;
         border: 1px solid transparent;
         border-radius: 2px;
-        font-size: 11px;
-        line-height: 1.3;
+        font-size: 10px;
+        line-height: 1.2;
+        height: 20px;
         background: transparent;
         color: var(--text-primary);
         transition: all 0.2s ease;
@@ -1520,7 +1528,7 @@ export default {
     .created-cell {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
 
         i {
             color: #999;
@@ -1556,18 +1564,19 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 2px;
+        gap: 1px;
 
         .btn-open {
-            padding: 3px 10px;
+            padding: 2px 8px;
             background: var(--button-bg);
             color: white;
             border: none;
             border-radius: 2px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             transition: background 0.2s ease;
             line-height: 1.2;
+            height: 20px;
 
             &:hover {
                 background: var(--button-hover);
