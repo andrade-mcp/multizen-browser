@@ -64,6 +64,7 @@ export default {
         return {
             view: null as WebviewTag | null,
             loading: false,
+            isNavigating: false,
         };
     },
 
@@ -100,26 +101,36 @@ export default {
         ...mapMutations("sessions", ["updateTab"]),
 
         navigate(url: string) {
-            if (url !== this.view?.getURL()) {
+            const currentUrl = this.view?.getURL();
+            if (url && url !== currentUrl && !this.isNavigating) {
+                this.isNavigating = true;
+                // Update tab URL immediately for better UX
+                this.updateTab({
+                    sessionIndex: this.currentSessionIndex,
+                    tabIndex: this.currentSession.currentTabIndex,
+                    k: "url",
+                    v: url,
+                });
                 this.view?.loadURL(url);
             }
         },
 
         didFinishLoad() {
-            this.view?.removeEventListener(
-                "did-finish-load",
-                this.didFinishLoad,
-            );
-            this.navigate(this.currentTab.url);
+            this.isNavigating = false;
+            // Don't navigate again - the page has already loaded
         },
 
         didNavigate(e) {
-            this.updateTab({
-                sessionIndex: this.currentSessionIndex,
-                tabIndex: this.currentSession.currentTabIndex,
-                k: "url",
-                v: e.url,
-            });
+            // Only update if URL actually changed to prevent unnecessary updates
+            if (e.url && e.url !== this.currentTab?.url) {
+                this.updateTab({
+                    sessionIndex: this.currentSessionIndex,
+                    tabIndex: this.currentSession.currentTabIndex,
+                    k: "url",
+                    v: e.url,
+                });
+            }
+            this.isNavigating = false;
         },
 
         pageFaviconUpdated(r) {
@@ -133,6 +144,7 @@ export default {
 
         didStartLoading() {
             this.loading = true;
+            this.isNavigating = true;
         },
 
         loaded() {
@@ -144,6 +156,7 @@ export default {
 
         didStopLoading() {
             this.loading = false;
+            this.isNavigating = false;
 
             this.updateTab({
                 sessionIndex: this.currentSessionIndex,
@@ -178,25 +191,32 @@ export default {
     height: 40px;
     min-height: 40px;
     max-height: 40px;
-    background-color: #1d1c3b;
+    background-color: var(--bg-secondary);
     display: flex;
     align-items: center;
     font-size: 12px;
-    border-bottom: 1px solid #1d224a;
+    border-bottom: 1px solid var(--border-color);
     z-index: 1;
     padding: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 
     button {
-        color: #f3f3f3;
+        color: var(--text-primary);
         width: 25px;
         height: 25px;
-        border-radius: 50%;
+        border-radius: 2px;
         border: 0;
         background: transparent;
         font-size: 12px;
+        transition: all 0.2s ease;
 
         &:hover {
-            background: rgba(247, 247, 247, 0.2);
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        &:active {
+            background: var(--active-bg);
         }
     }
 }

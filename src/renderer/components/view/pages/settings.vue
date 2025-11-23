@@ -1,13 +1,27 @@
 <template>
     <div class="view-settings">
         <div v-if="currentSession" class="settings-wrap">
-            <h1>Session Settings</h1>
+            <h1>{{ currentSession.name || `Session${currentSessionIndex + 1}` }}</h1>
             <div class="session-info">
                 <p>Session ID: {{ currentSession.id }}</p>
                 <p>These settings apply to the current session only.</p>
                 <button class="close-session-btn" @click="closeSession">
                     Close session
                 </button>
+            </div>
+            <hr />
+            <div class="settings-block">
+                <h4>Session Name</h4>
+                <div class="input-block">
+                    <input
+                        v-model="sessionName"
+                        class="d-block"
+                        type="text"
+                        placeholder="Enter session name"
+                        @blur="saveSessionName"
+                        @change="saveSessionName"
+                    />
+                </div>
             </div>
             <hr />
             <div>
@@ -114,6 +128,7 @@ export default {
         return {
             userAgent: "",
             homePage: "",
+            sessionName: "",
             defaultUserAgent,
         };
     },
@@ -125,10 +140,15 @@ export default {
     created() {
         this.userAgent = this.currentSession.settings.userAgent;
         this.homePage = this.currentSession.settings.homePage;
+        this.sessionName = this.currentSession.name || `Session${this.currentSessionIndex + 1}`;
     },
 
     methods: {
-        ...mapMutations("sessions", ["updateSessionSetting", "removeSession"]),
+        ...mapMutations("sessions", [
+            "updateSessionSetting",
+            "removeSession",
+            "updateSessionName",
+        ]),
 
         saveHomePage() {
             this.homePage = this.urlify(this.homePage.trim());
@@ -157,6 +177,15 @@ export default {
             });
         },
 
+        saveSessionName() {
+            const name = this.sessionName.trim() || `Session${this.currentSessionIndex + 1}`;
+            this.updateSessionName({
+                sessionIndex: this.currentSessionIndex,
+                name: name,
+            });
+            this.sessionName = name;
+        },
+
         closeSession() {
             this.removeSession({ sessionIndex: this.currentSessionIndex });
         },
@@ -182,8 +211,10 @@ export default {
     align-items: center;
     text-align: left;
     font-size: 16px;
-    color: #6c6969;
+    color: var(--text-primary);
+    background: var(--bg-primary);
     overflow: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .settings-wrap {
@@ -194,20 +225,23 @@ export default {
 }
 
 .close-session-btn {
-    font-family: monospace;
+    font-family: inherit;
     text-transform: uppercase;
-    background-color: #f8c9c9;
-    border: 1px solid #dc7575;
-    border-radius: 5px;
+    background-color: #4a2a2a;
+    border: 1px solid #6a3a3a;
+    border-radius: 2px;
     outline: 0;
     padding: 5px 9px;
     cursor: pointer;
     white-space: nowrap;
     font-weight: bold;
+    color: #ff9999;
+    transition: all 0.2s ease;
 
     &:hover {
-        background-color: #f8d8d8;
-        border: 1px solid #cc4242;
+        background-color: #5a3a3a;
+        border: 1px solid #8a4a4a;
+        color: #ffaaaa;
     }
 }
 
@@ -220,15 +254,18 @@ h4 {
     font-size: 13px;
     text-transform: uppercase;
     margin-bottom: 6px;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
 }
 
 hr {
     width: 100%;
     height: 1px;
     display: block;
-    background-color: #d8d8d8;
+    background-color: var(--border-color);
     border: 0;
     margin: 16px 0;
+    transition: background-color 0.3s ease;
 }
 
 .settings-block {
@@ -237,8 +274,9 @@ hr {
 
 .input-block {
     label {
-        color: #27262e;
+        color: var(--text-primary);
         font-size: 14px;
+        transition: color 0.3s ease;
     }
 
     input[type="text"],
@@ -246,18 +284,22 @@ hr {
         width: 100%;
         padding: 6px;
         outline: 0;
-        border: 2px solid #d9d9ff;
-        border-radius: 3px;
-        transition: 0.3s ease;
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+        background-color: var(--input-bg);
+        color: var(--text-primary);
 
         &:read-only {
             cursor: default;
-            color: gray;
-            border: 2px solid #bebebe;
+            color: var(--text-tertiary);
+            border: 1px solid var(--border-light);
+            background-color: var(--bg-tertiary);
         }
 
         &:focus {
-            border: 2px solid #7575dc;
+            border: 1px solid var(--accent-color);
+            background-color: var(--bg-tertiary);
         }
     }
 
@@ -279,20 +321,23 @@ hr {
 }
 
 .set-ua-btn {
-    font-family: monospace;
+    font-family: inherit;
     text-transform: uppercase;
-    background-color: #c9c9f8;
-    border: 1px solid #7575dc;
-    border-radius: 5px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 2px;
     outline: 0;
     padding: 5px 9px;
     margin-left: 12px;
     cursor: pointer;
     white-space: nowrap;
+    color: white;
+    transition: all 0.2s ease;
 
     &:hover {
-        background-color: #d8d8f8;
-        border: 1px solid #4242cc;
+        background-color: var(--button-hover);
+        border: 1px solid var(--accent-hover);
+        color: #ffffff;
 
         i {
             transform: rotate(360deg);
