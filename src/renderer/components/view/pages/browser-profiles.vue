@@ -1330,13 +1330,14 @@ export default {
         transition: background-color 0.3s ease;
 
         th {
-            padding: 12px 8px;
+            padding: 8px 8px;
             text-align: left;
             font-weight: 600;
             color: var(--text-primary);
             border-bottom: 2px solid var(--border-color);
             white-space: nowrap;
             transition: color 0.3s ease, border-color 0.3s ease;
+            font-size: 12px;
 
             &.sortable {
                 cursor: pointer;
@@ -1380,10 +1381,12 @@ export default {
             }
 
             td {
-                padding: 12px 8px;
+                padding: 6px 8px;
                 color: var(--text-primary);
                 vertical-align: middle;
                 transition: color 0.3s ease;
+                font-size: 12px;
+                line-height: 1.4;
             }
         }
     }
@@ -1420,10 +1423,11 @@ export default {
 
         .name-input {
             flex: 1;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border: 1px solid transparent;
             border-radius: 2px;
-            font-size: 13px;
+            font-size: 12px;
+            line-height: 1.3;
             background: transparent;
             color: var(--text-primary);
             min-width: 0;
@@ -1489,10 +1493,11 @@ export default {
 
     .remark-input {
         width: 100%;
-        padding: 4px 8px;
+        padding: 3px 6px;
         border: 1px solid transparent;
         border-radius: 2px;
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 1.3;
         background: transparent;
         color: var(--text-primary);
         transition: all 0.2s ease;
@@ -1533,8 +1538,8 @@ export default {
         border: none;
         cursor: pointer;
         color: var(--text-secondary);
-        font-size: 16px;
-        padding: 4px;
+        font-size: 14px;
+        padding: 2px;
         transition: all 0.2s ease;
 
         &:hover {
@@ -1551,17 +1556,18 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 4px;
+        gap: 2px;
 
         .btn-open {
-            padding: 4px 12px;
+            padding: 3px 10px;
             background: var(--button-bg);
             color: white;
             border: none;
             border-radius: 2px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             transition: background 0.2s ease;
+            line-height: 1.2;
 
             &:hover {
                 background: var(--button-hover);
@@ -1569,8 +1575,9 @@ export default {
         }
 
         .open-time {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
+            line-height: 1.2;
         }
 
         .open-menu {
@@ -1600,8 +1607,8 @@ export default {
         border: none;
         cursor: pointer;
         color: #ccc;
-        font-size: 16px;
-        padding: 4px;
+        font-size: 14px;
+        padding: 2px;
 
         &:hover {
             color: #ffc107;
