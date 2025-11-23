@@ -1,5 +1,5 @@
 <template>
-    <div class="session-tab" :class="{ active }">
+    <div class="session-tab" :class="{ active }" @click="handleClick">
         <slot>
             <img
                 src="@renderer/assets/icons/icon.png"
@@ -19,6 +19,13 @@ const props = {
 
 export default {
     props,
+    methods: {
+        handleClick(event: Event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.$emit("click", event);
+        },
+    },
 };
 </script>
 
@@ -34,17 +41,18 @@ export default {
     transition: 0.2s ease;
 
     &:hover {
-        background-color: rgba(82, 104, 162, 0.3);
+        background-color: var(--hover-bg);
         border-radius: 50%;
     }
 
     &.active {
-        background-color: rgba(38, 78, 185, 0.3);
+        background-color: var(--selected-bg);
         border-radius: 50%;
+        border: 1px solid var(--accent-color);
     }
 
     i {
-        color: #575757;
+        color: var(--text-secondary);
     }
 
     &.new-session {
@@ -54,21 +62,21 @@ export default {
         align-items: center;
         justify-content: center;
         margin: 10px 0;
-        border: 1px solid rgba(54, 74, 128, 0.2);
-        border-radius: 12px;
-        color: #f1f1f1;
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        color: var(--text-primary);
         font-size: 18px;
         transition: 0.5s ease;
-        background-color: rgba(82, 104, 162, 0.2);
+        background-color: var(--bg-tertiary);
 
         &:hover {
-            color: white;
-            border-color: rgba(97, 115, 164, 0.9);
-            background-color: rgba(97, 115, 164, 0.5);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background-color: var(--active-bg);
         }
 
         i {
-            color: #8097e8;
+            color: var(--accent-color);
         }
     }
 
