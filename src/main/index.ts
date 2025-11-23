@@ -47,6 +47,9 @@ function createWindow(): void {
 
     mainWindow.setMenuBarVisibility(false);
 
+    // Maximize window on startup
+    mainWindow.maximize();
+
     mainWindow.on("ready-to-show", () => {
         if (!mainWindow) {
             logger.error('"mainWindow" is not defined');

@@ -30,7 +30,6 @@
             <!-- Theme Toggle -->
             <button 
                 class="theme-toggle" 
-                :data-theme="theme" 
                 @click="toggleTheme" 
                 :title="theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
             >
@@ -248,18 +247,18 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #007acc;
+    background: transparent;
     border: none;
-    border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
     -webkit-app-region: no-drag;
-    color: white;
+    color: var(--text-secondary);
     margin: 0 4px;
+    border-radius: 2px;
 
     &:hover {
-        background: #005f99;
-        transform: scale(1.05);
+        background: var(--hover-bg);
+        color: var(--text-primary);
     }
 
     &:active {
@@ -267,8 +266,7 @@ export default {
     }
 
     i {
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 16px;
     }
 }
 

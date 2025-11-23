@@ -5,6 +5,7 @@
         <div class="sessions-and-view">
             <side-bar />
             <content-view v-if="currentSession" />
+            <right-sessions-bar />
         </div>
 
         <info-modal />
@@ -13,6 +14,7 @@
 
 <script lang="ts">
 import SideBar from "./components/sidebar/bar.vue";
+import RightSessionsBar from "./components/sidebar/right-sessions-bar.vue";
 import TopBar from "./components/topbar/bar.vue";
 import ContentView from "./components/view/index.vue";
 import InfoModal from "./components/info-modal/index.vue";
@@ -22,6 +24,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
     components: {
         SideBar,
+        RightSessionsBar,
         ContentView,
         TopBar,
         InfoModal,

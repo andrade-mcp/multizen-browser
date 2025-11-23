@@ -105,6 +105,7 @@
                             <i class="fa" :class="getSortIcon('opened')" />
                         </th>
                         <th class="col-fav">Fav</th>
+                        <th class="col-delete">Delete</th>
                     </tr>
                 </thead>
                 <tbody v-if="sessions.length > 0">
@@ -189,11 +190,20 @@
                                 <i class="fa" :class="isFavorite(item.index) ? 'fa-star' : 'fa-star-o'" />
                             </button>
                         </td>
+                        <td class="col-delete">
+                            <button
+                                class="delete-btn"
+                                @click="deleteSession(item.index)"
+                                title="Delete Session"
+                            >
+                                <i class="fa fa-trash" />
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
                 <tbody v-else>
                     <tr class="empty-row">
-                        <td colspan="11" class="empty-state">
+                        <td colspan="12" class="empty-state">
                             <div class="empty-state-content">
                                 <i class="fa fa-globe" />
                                 <p>No browser sessions yet</p>
@@ -915,6 +925,26 @@ export default {
             }
         },
 
+        deleteSession(index: number) {
+            const sessionName = this.sessions[index]?.name || `Session${index + 1}`;
+            if (
+                confirm(
+                    `Are you sure you want to delete "${sessionName}"?`,
+                )
+            ) {
+                if (this.sessions.length > 1) {
+                    this.removeSession(index);
+                    // Remove from selected if it was selected
+                    const selectedIdx = this.selectedSessions.indexOf(index);
+                    if (selectedIdx > -1) {
+                        this.selectedSessions.splice(selectedIdx, 1);
+                    }
+                } else {
+                    alert("Cannot delete the last session. Please create a new session first.");
+                }
+            }
+        },
+
         addNewSession() {
             const sessionName = `Session${this.sessions.length + 1}`;
             const newIndex = this.sessions.length;
@@ -1615,9 +1645,10 @@ export default {
         background: transparent;
         border: none;
         cursor: pointer;
-        color: #ccc;
+        color: var(--text-secondary);
         font-size: 14px;
         padding: 2px;
+        transition: color 0.2s ease;
 
         &:hover {
             color: #ffc107;
@@ -1625,6 +1656,36 @@ export default {
 
         &.active {
             color: #ffc107;
+        }
+    }
+}
+
+.col-delete {
+    width: 50px;
+    text-align: center;
+
+    .delete-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 14px;
+        padding: 2px;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 2px;
+
+        &:hover {
+            color: #e81123;
+            background: rgba(232, 17, 35, 0.1);
+        }
+
+        &:active {
+            transform: scale(0.95);
         }
     }
 }

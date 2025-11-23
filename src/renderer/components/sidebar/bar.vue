@@ -21,30 +21,6 @@
             </div>
         </div>
 
-        <!-- Session Tabs Section -->
-        <div class="sidebar-section">
-            <div class="section-header" v-if="isExpanded">
-                <span>Browser Sessions</span>
-            </div>
-            <session-tabs>
-                <session-tab
-                    title="New session"
-                    class="new-session"
-                    @click.stop="setNewSession"
-                >
-                    <i class="fa fa-plus" />
-                </session-tab>
-
-                <session-tab
-                    v-for="(s, k) in sessions"
-                    :key="s.id"
-                    :style="{ filter: `hue-rotate(${k * 42}deg)` }"
-                    :active="k === currentSessionIndex"
-                    :title="s.name || `Session${k + 1}`"
-                    @click.stop="handleSessionClick(k)"
-                />
-            </session-tabs>
-        </div>
 
         <!-- Footer -->
         <side-footer :expanded="isExpanded" />
@@ -53,9 +29,7 @@
 
 <script lang="ts">
 import SideFooter from "./footer.vue";
-import SessionTabs from "./session-tabs/session-tabs.vue";
-import SessionTab from "./session-tabs/session-tab.vue";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 import { EventBus } from "@renderer/utils/event-bus";
 
 interface MenuItem {
@@ -67,8 +41,6 @@ interface MenuItem {
 
 export default {
     components: {
-        SessionTab,
-        SessionTabs,
         SideFooter,
     },
 
@@ -92,8 +64,6 @@ export default {
     computed: {
         ...mapGetters("sessions", [
             "currentSession",
-            "sessions",
-            "currentSessionIndex",
         ]),
     },
 
@@ -106,12 +76,6 @@ export default {
     },
 
     methods: {
-        ...mapMutations("sessions", [
-            "addSession",
-            "removeSession",
-            "setActiveSession",
-        ]),
-
         toggleSidebar() {
             this.isExpanded = !this.isExpanded;
             localStorage.setItem("sidebar-expanded", String(this.isExpanded));
@@ -128,28 +92,6 @@ export default {
             } else {
                 // For other menu items, show normal view
                 EventBus.emit("show-normal-view");
-            }
-        },
-
-        handleSessionClick(index: number) {
-            this.setActiveSession(index);
-            EventBus.emit("session-selected");
-        },
-
-        setNewSession(event?: Event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            
-            const sessionName = `Session${this.sessions.length + 1}`;
-            
-            try {
-                // Use $store.commit directly to ensure it works
-                this.$store.commit("sessions/addSession", sessionName);
-                EventBus.emit("session-selected");
-            } catch (error) {
-                console.error("Error creating session:", error);
             }
         },
     },
@@ -264,29 +206,6 @@ export default {
     }
 }
 
-.sidebar-section {
-    margin-top: auto;
-    border-top: 1px solid var(--border-color);
-    padding-top: 10px;
-}
-
-.section-header {
-    padding: 8px 16px;
-    font-size: 11px;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: all 0.3s ease;
-}
-
-.sidebar-container.expanded {
-    .section-header {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
 
 // Scrollbar styling for menu
 .sidebar-menu::-webkit-scrollbar {
