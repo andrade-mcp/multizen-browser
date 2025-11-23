@@ -5,16 +5,11 @@
             :key="tab.id"
             class="tab"
             :class="{ active: currentSession.currentTabIndex === index }"
-            @click.stop="
-                setActiveTab({
-                    sessionIndex: currentSessionIndex,
-                    tabIndex: index,
-                })
-            "
+            @click.stop="handleTabClick(index)"
         >
             <div v-if="tab.type === 'settings'" class="tab-name">
-                <img class="tab-favicon" src="../../assets/icons/icon.png" />
-                <div>Session settings</div>
+                <img class="tab-favicon" src="../../assets/icons/icon.png" alt="" />
+                <span class="tab-title">{{ currentSession.name || tab.title || 'Session settings' }}</span>
             </div>
 
             <div v-if="tab.type !== 'settings'" class="tab-name">
@@ -22,19 +17,22 @@
                     v-if="tab.favicon"
                     class="tab-favicon"
                     :src="tab.favicon"
+                    alt=""
                 />
                 <img
                     v-else
                     class="tab-favicon"
                     src="../../assets/icons/icon.png"
+                    alt=""
                 />
-                <div class="tab-title">
+                <span class="tab-title">
                     {{ tab.title || "New Tab" }}
-                </div>
+                </span>
 
                 <button
                     class="tab-close-btn"
                     @click.stop="removeTabWithIndex(index)"
+                    title="Close tab"
                 >
                     <i class="fa fa-times" />
                 </button>
@@ -49,6 +47,7 @@
 
 <script lang="ts">
 import { mapGetters, mapMutations } from "vuex";
+import { EventBus } from "@renderer/utils/event-bus";
 
 export default {
     computed: {
@@ -77,6 +76,15 @@ export default {
                 tabIndex: index,
             });
         },
+
+        handleTabClick(index: number) {
+            this.setActiveTab({
+                sessionIndex: this.currentSessionIndex,
+                tabIndex: index,
+            });
+            // Ensure we're in normal view when clicking a tab
+            EventBus.emit("show-normal-view");
+        },
     },
 };
 </script>
@@ -84,66 +92,123 @@ export default {
 <style scoped lang="scss">
 .tabs-container {
     display: flex;
-    color: #fff;
-    padding-right: 5px;
-    padding-left: 56px;
-    margin-top: auto;
-    overflow: visible;
+    align-items: flex-end;
+    color: var(--text-primary);
+    padding: 0 8px 0 56px;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     -webkit-app-region: no-drag;
+    gap: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .tab {
     display: flex;
     position: relative;
-    background-color: rgba(29, 28, 59, 0.35);
-    padding: 8px 10px 6px 10px;
-    margin-right: 6px;
-    border-radius: 5px 5px 0 0;
+    align-items: center;
+    background-color: var(--bg-tertiary);
+    padding: 0 12px;
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    margin-right: 0;
+    border-radius: 0;
+    transition: all 0.15s ease;
+    border: none;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    user-select: none;
 
     &:hover {
-        background-color: rgba(29, 28, 59, 0.7);
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
     }
 
     &.active {
-        background-color: #1d1c3b;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        height: 32px;
+        min-height: 32px;
+        border-top: 1px solid var(--border-color);
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--tab-accent);
+        box-shadow: 0 -1px 0 0 var(--bg-primary);
+        z-index: 1;
+        font-weight: 500;
+        margin-bottom: -1px;
     }
 
     .tab-name {
         display: flex;
-        max-width: 150px;
         align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        max-width: 200px;
+        min-width: 0;
+        height: 100%;
+        gap: 6px;
     }
 
     .tab-favicon {
         width: 16px;
         height: 16px;
-        margin-right: 6px;
+        flex-shrink: 0;
+        object-fit: contain;
     }
 
     .tab-title {
-        padding-right: 18px;
-        text-overflow: ellipsis;
+        flex: 1;
+        min-width: 0;
         overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        line-height: 1.2;
+        display: inline-block;
     }
 
     .tab-close-btn {
         position: absolute;
-        right: 5px;
-        width: 20px;
-        height: 20px;
-        font-size: 10px;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        font-size: 11px;
         background-color: transparent;
         border: 0;
         outline: 0;
-        color: #f4f4f4;
-        border-radius: 50%;
+        color: var(--text-secondary);
+        border-radius: 2px;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        cursor: pointer;
 
         &:hover {
-            background-color: rgba(33, 60, 94, 0.9);
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
         }
+    }
+
+    &:hover .tab-close-btn {
+        opacity: 1;
+    }
+
+    &.active .tab-close-btn {
+        opacity: 1;
     }
 }
 
@@ -151,16 +216,22 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
     background-color: transparent;
     border: 0;
     outline: 0;
-    color: #f3f3f3;
-    border-radius: 50%;
+    color: var(--text-secondary);
+    border-radius: 2px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 2px;
 
     &:hover {
-        background-color: rgba(245, 245, 245, 0.2);
+        background-color: var(--hover-bg);
+        color: var(--text-primary);
     }
 }
 </style>
