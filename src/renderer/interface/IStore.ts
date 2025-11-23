@@ -15,6 +15,7 @@ export interface ISession {
     };
     id: string;
     currentTabIndex: number;
+    name?: string;
 }
 
 export interface IState {

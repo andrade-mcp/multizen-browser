@@ -5,14 +5,15 @@ import { v4 as uuid } from "uuid";
 import { defaultHomePage, defaultUserAgent } from "@renderer/data/main";
 
 const mutations: MutationTree<IState> = {
-    addSession: async (s) => {
+    addSession: (s, name?: string) => {
         const sessionId = uuid();
+        const sessionName = name || `Session${s.sessions.length + 1}`;
         s.sessions.push({
             tabs: [
                 {
                     type: "settings",
                     id: uuid(),
-                    title: "Session Settings",
+                    title: sessionName,
                     session: sessionId,
                 },
             ],
@@ -22,6 +23,7 @@ const mutations: MutationTree<IState> = {
                 homePage: defaultHomePage,
                 userAgent: defaultUserAgent,
             },
+            name: sessionName,
         });
         s.currentSessionIndex = s.sessions.length - 1;
     },
@@ -78,6 +80,15 @@ const mutations: MutationTree<IState> = {
 
     setActiveSession: (s, sessionIndex: number) => {
         s.currentSessionIndex = sessionIndex;
+    },
+
+    updateSessionName: (s, { sessionIndex, name }: { sessionIndex: number; name: string }) => {
+        s.sessions[sessionIndex].name = name;
+        // Update the settings tab title to match the session name
+        const settingsTab = s.sessions[sessionIndex].tabs.find((tab) => tab.type === "settings");
+        if (settingsTab) {
+            settingsTab.title = name;
+        }
     },
 };
 
